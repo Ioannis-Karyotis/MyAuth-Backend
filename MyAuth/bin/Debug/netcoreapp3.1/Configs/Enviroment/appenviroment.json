@@ -1,0 +1,22 @@
+{
+  "APPSTATERUN": {
+    "Key": "ASPENVMAINACT",
+    "Value": "PgSQLConnection"
+  },
+  "APPMAINHANDLE": {
+    "Key": "ASPENVMAINHANDLE",
+    "Value": ""
+  },
+  "APPNETENV": {
+    "Key": "ASPNETCORE_ENVIRONMENT",
+    "Value": "Development"
+  },
+  "CONTENTROOTLOYAL": {
+    "Key": "CONTENTROOTLOYAL",
+    "Value": ""
+  },
+  "WEBROOTLOYAL": {
+    "Key": "WEBROOTLOYAL",
+    "Value": ""
+  }
+}
