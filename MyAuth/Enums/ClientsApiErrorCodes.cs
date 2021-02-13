@@ -5,13 +5,11 @@ using System.Threading.Tasks;
 
 namespace MyAuth.Enums
 {
-    public enum InternalDataStatuses
+    public enum ClientsApiErrorCodes
     {
-        Success,
         Unauthorized,
         UnauthorizedApplication,
         InternalError,
         NotExistingUser
-
     }
 }

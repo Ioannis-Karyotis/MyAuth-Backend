@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using MyAuth.Enums;
 using MyAuth.Models.ApiResponseModels;
+using MyAuth.Models.Data;
 using MyAuth.Models.Database;
 using MyAuth.Models.RequestModels;
 using MyAuth.services;
@@ -65,27 +66,24 @@ namespace MyAuth.Controllers
 
         [HttpPost]
         [EnableCors]
-        public async Task<ActionResult<SuccessfulRegisterRespModel>> Post([FromBody] RegisterReqModel newUser)
+        public async Task<ActionResult<HttpResponseData<SuccessfulRegisterRespModel, ClientsApiErrorCodes>>> Post([FromBody] RegisterReqModel newUser)
         {
-            InternalDataTransfer<SuccessfulRegisterRespModel> response = await _authServices.DoSignupUser(newUser);
+            HttpResponseData<SuccessfulRegisterRespModel, ClientsApiErrorCodes> response = await _authServices.DoSignupUser(newUser);
 
-            InternalDataStatuses val = response.Status;
+            if (response.Success == true)
+            {
+                return Ok(response);
+            }
+
+            ClientsApiErrorCodes val = response.Error.ErrorCode;
 
             switch (val)
             {
-                case InternalDataStatuses.Success:
-                    goto SuccessCase;
-
-                case InternalDataStatuses.InternalError:
+                case ClientsApiErrorCodes.InternalError:
                     goto FailureCase;
-
-                default:
-                    goto FailureCase;
-
             }
 
-        SuccessCase: return Ok(response.Data);
-        FailureCase: return Unauthorized();
+        FailureCase: return Unauthorized(new HttpResponseData<SuccessfulRegisterRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.InternalError));
         }
 
         // PUT api/<RegisterController>/5

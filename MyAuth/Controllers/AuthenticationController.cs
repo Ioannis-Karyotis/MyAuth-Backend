@@ -28,84 +28,48 @@ namespace MyAuth.Controllers
 
         [HttpPost("signin")]
         [EnableCors]
-        public async Task<ActionResult<HttpResponseData<SuccessfulLoginRespModel>>> Signin([FromBody] LoginRequestModel input)
+        public async Task<ActionResult<HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>>> Signin([FromBody] LoginRequestModel input)
         {
-            InternalDataTransfer<SuccessfulLoginRespModel> response = await _authServices.DoLoginUser(input);
+            HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes> response = await _authServices.DoLoginUser(input);
 
-            InternalDataStatuses val = response.Status;
+            if (response.Success == true)
+            {
+                return Ok(response);
+            }
+
+            ClientsApiErrorCodes val = response.Error.ErrorCode;
 
             switch (val)
             {
-                case InternalDataStatuses.Success:
-                    goto SuccessCase;
-
-                case InternalDataStatuses.NotExistingUser:
+                case ClientsApiErrorCodes.NotExistingUser:
                     goto NotExistingUserCase;
-
-                default:
-                    goto FailureCase;
-
             }
+            
 
-        SuccessCase: return Ok(new HttpResponseData<SuccessfulLoginRespModel>() 
-            {
-                Success = true,
-                Data = response.Data,
-                Error = null
-            });
-        NotExistingUserCase: return StatusCode(StatusCodes.Status500InternalServerError, new HttpResponseData<SuccessfulLoginRespModel>()
-        {
-            Success = false,
-            Data = null,
-            Error = val.ToString()
-        });
-        FailureCase: return StatusCode(StatusCodes.Status500InternalServerError, new HttpResponseData<SuccessfulLoginRespModel>()
-            {
-                Success = false,
-                Data = null,
-                Error = val.ToString()
-            });
+        NotExistingUserCase: return StatusCode(StatusCodes.Status500InternalServerError, new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.NotExistingUser));
+
         }       
         
         [HttpPost("facial/recognition")]
         [EnableCors]
-        public async Task<ActionResult<HttpResponseData<SuccessfulLoginRespModel>>> SigninFacialRecognition([FromBody] LoginFacialRequestModel input)
+        public async Task<ActionResult<HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>>> SigninFacialRecognition([FromBody] LoginFacialRequestModel input)
         {
-            InternalDataTransfer<SuccessfulLoginRespModel> response = await _authServices.FacialRecognition(input);
+            HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes> response = await _authServices.FacialRecognition(input);
 
-            InternalDataStatuses val = response.Status;
+            if (response.Success == true)
+            {
+                return Ok(response);
+            }
+
+            ClientsApiErrorCodes val = response.Error.ErrorCode;
 
             switch (val)
             {
-                case InternalDataStatuses.Success:
-                    goto SuccessCase;
-
-                case InternalDataStatuses.NotExistingUser:
+                case ClientsApiErrorCodes.NotExistingUser:
                     goto NotExistingUserCase;
-
-                default:
-                    goto FailureCase;
-
             }
 
-        SuccessCase: return Ok(new HttpResponseData<SuccessfulLoginRespModel>()
-        {
-            Success = true,
-            Data = response.Data,
-            Error = null
-        });
-        NotExistingUserCase: return StatusCode(StatusCodes.Status500InternalServerError, new HttpResponseData<SuccessfulLoginRespModel>()
-        {
-            Success = false,
-            Data = null,
-            Error = val.ToString()
-        });
-        FailureCase: return StatusCode(StatusCodes.Status500InternalServerError, new HttpResponseData<SuccessfulLoginRespModel>()
-        {
-            Success = false,
-            Data = null,
-            Error = val.ToString()
-        });
+        NotExistingUserCase: return StatusCode(StatusCodes.Status500InternalServerError, new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.NotExistingUser));
             
         }
 

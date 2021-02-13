@@ -16,12 +16,15 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MyAuth.Data;
 using MyAuth.Middleware;
+using MyAuth.Models.ConfigurationModels;
 using MyAuth.Models.Data;
 using MyAuth.Models.Database;
+using MyAuth.Models.Interfaces;
 using MyAuth.services;
 using MyAuth.Utils;
 using MyAuth.Utils.Extentions;
 using MyAuth.Utils.Handlers;
+using MyAuth.Utils.HttpClients;
 
 namespace MyAuth
 {
@@ -87,12 +90,18 @@ namespace MyAuth
             //Memory Cache Handler Service
             services.AddMemoryHandlerService<MemoryKeys>();
 
+            //HttpClients
+            services.AddHttpClient<FlaskFaceAuthHttpClient>();
+
             //Set Config Data
             services.ConfigBindClasses(Configuration);
-            //services.AddSingleton<IMainConfigurationModel, MainServicesConfigurations>();
+            services.AddSingleton<IMainConfigurationModel, MainServicesConfigurations>();
 
             //Rest Services
             services.AddScoped<AuthServices>();
+            services.AddScoped<FlaskFaceAuthServices>();
+
+
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {

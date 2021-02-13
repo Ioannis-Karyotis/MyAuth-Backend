@@ -1,0 +1,5 @@
+﻿{
+  "FlaskFaceAuthServiceConfig": {
+    "ClientBaseUrl": "http://localhost:5000"
+  }
+}

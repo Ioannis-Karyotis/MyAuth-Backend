@@ -13,6 +13,7 @@ using MyAuth.Models.Database;
 using MyAuth.Models.RequestModels;
 using MyAuth.Utils;
 using MyAuth.Utils.Extentions;
+using MyAuth.Utils.HttpClients;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,7 @@ namespace MyAuth.services
         private readonly UserManager<MyAuthUser> _userManager;
         private readonly ILogger<AuthServices> _logger;
         private readonly RequestValidatorPartsHelper _requestValidatorPartsHelper;
+        private readonly FlaskFaceAuthServices _flaskFaceAuthServices;
 
         public AuthServices(
             IOptions<AuthPasswordHash> authPassword,
@@ -39,7 +41,9 @@ namespace MyAuth.services
             SignInManager<MyAuthUser> signInManager,
             UserManager<MyAuthUser> userManager,
             ILogger<AuthServices> logger,
-            RequestValidatorPartsHelper requestValidatorPartsHelper
+            RequestValidatorPartsHelper requestValidatorPartsHelper,
+            IOptions<FlaskFaceAuthServiceConfig> flaskFaceAuth,
+            FlaskFaceAuthServices flaskFaceAuthServices
             )
         {
             _authPassword = authPassword.Value;
@@ -49,6 +53,7 @@ namespace MyAuth.services
             _userManager = userManager;
             _logger = logger;
             _requestValidatorPartsHelper = requestValidatorPartsHelper;
+            _flaskFaceAuthServices = flaskFaceAuthServices;
         }
         public AuthModel GetAthenticatedByMiddlewareInfo()
         {
@@ -62,9 +67,8 @@ namespace MyAuth.services
         }
 
 
-        public async Task<InternalDataTransfer<SuccessfulLoginRespModel>> DoLoginUser(LoginRequestModel Input)
+        public async Task<HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>> DoLoginUser(LoginRequestModel Input)
         {
-            InternalDataTransfer<SuccessfulLoginRespModel> internalRequest = new InternalDataTransfer<SuccessfulLoginRespModel>();
 
             var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, false , lockoutOnFailure: false);
             if (result.Succeeded)
@@ -84,7 +88,7 @@ namespace MyAuth.services
 
                 _actionContext.HttpContext.Response.Headers.Add("X-AUTH-DASH", finalEncrypted);
 
-                internalRequest.Data = new SuccessfulLoginRespModel()
+                var internalRequest = new SuccessfulLoginRespModel()
                 {
 
                     AuthToken = finalEncrypted,
@@ -94,8 +98,7 @@ namespace MyAuth.services
                     DateExpired = DateTime.Now.AddMinutes(30)
                 };
 
-                internalRequest.Status = InternalDataStatuses.Success;
-                return internalRequest;
+                return new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(internalRequest);
             }
             /*if (result.RequiresTwoFactor)
             {
@@ -108,15 +111,12 @@ namespace MyAuth.services
             }*/
             else
             {
-                internalRequest.Status = InternalDataStatuses.NotExistingUser;
-                return internalRequest;
+                return new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.NotExistingUser);
             }
         }
 
-        public async Task<InternalDataTransfer<SuccessfulLoginRespModel>> FacialRecognition(LoginFacialRequestModel Input)
+        public async Task<HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>> FacialRecognition(LoginFacialRequestModel Input)
         {
-            InternalDataTransfer<SuccessfulLoginRespModel> internalRequest = new InternalDataTransfer<SuccessfulLoginRespModel>();
-
             //Check if the hash thats was in headers returns null
             if (_requestValidatorPartsHelper.RetrieveValidateDiscardHash(Input.X_seq))
             {
@@ -124,8 +124,7 @@ namespace MyAuth.services
 
                 if (hashValues == null)
                 {
-                    internalRequest.Status = InternalDataStatuses.Unauthorized;
-                    return internalRequest;  
+                    return new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.Unauthorized);
                 }
 
                 string? id = hashValues[0];
@@ -134,21 +133,28 @@ namespace MyAuth.services
                 {
                     //Do Facial stuff
                     _logger.LogInformation("User logged in.");
-                    var existingUser = await _userManager.FindByEmailAsync("kkjhkjhkhjj");
+                    var existingUser = await _userManager.FindByIdAsync(id);
 
+                    if (existingUser == null)
+                    {
+                        return new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.Unauthorized);
+                    }
 
-                    AuthModel userAuth = new AuthModel();
+                    var base64Img = Input.Base64Img.Replace("data:image/png;base64,", "");
+
+                    var response = await _flaskFaceAuthServices.IdentifyUser(new FlaskFaceAuthIdentifyUserRequestModel() {Base64Img =  base64Img });
+
+                   AuthModel userAuth = new AuthModel();
                     userAuth.ID = existingUser.Id.ToString();
 
                     //its wrong not hours but days 30 default TODO: Change It
                     userAuth.ValidUntil = DateTime.Now.AddMinutes(30);
 
                     var finalEncrypted = _encrypterDecrypter.EncryptObject<AuthModel>(userAuth);
-                    string hash = _requestValidatorPartsHelper.CombineAndSaveHash(existingUser.Email, Guid.Parse(existingUser.Id));
 
                     _actionContext.HttpContext.Response.Headers.Add("X-AUTH-DASH", finalEncrypted);
 
-                    internalRequest.Data = new SuccessfulLoginRespModel()
+                    var internalRequest = new SuccessfulLoginRespModel()
                     {
                         AuthToken = finalEncrypted,
                         Id = existingUser.Id,
@@ -156,26 +162,21 @@ namespace MyAuth.services
                         DateExpired = DateTime.Now.AddMinutes(30)
                     };
 
-                    internalRequest.Status = InternalDataStatuses.Success;
-                    return internalRequest;
+                    return new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(internalRequest);
                 }
                 else
                 {
-                    internalRequest.Status = InternalDataStatuses.Unauthorized;
-                    return internalRequest;
+                    return new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.Unauthorized);
                 }
             }
             else
             {
-                internalRequest.Status = InternalDataStatuses.UnauthorizedApplication;
-                return internalRequest;
+                return new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.UnauthorizedApplication);
             }
         }
 
-        public async Task<InternalDataTransfer<SuccessfulRegisterRespModel>> DoSignupUser(RegisterReqModel newUser)
+        public async Task<HttpResponseData<SuccessfulRegisterRespModel, ClientsApiErrorCodes>> DoSignupUser(RegisterReqModel newUser)
         {
-            InternalDataTransfer<SuccessfulRegisterRespModel> internalRequest = new InternalDataTransfer<SuccessfulRegisterRespModel>();
-
             var user = new MyAuthUser()
             {
                 UserName = newUser.Email,
@@ -187,13 +188,13 @@ namespace MyAuth.services
             if (result.Succeeded)
             {
                 _logger.LogInformation("User created a new account with password.");
-                internalRequest.Status = InternalDataStatuses.Success;
+                return new HttpResponseData<SuccessfulRegisterRespModel, ClientsApiErrorCodes>();
                 /*var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));*/
             }
             else
             {
-                internalRequest.Status = InternalDataStatuses.InternalError;
+                return new HttpResponseData<SuccessfulRegisterRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.InternalError);
             }
             /*var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
@@ -213,7 +214,6 @@ namespace MyAuth.services
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return LocalRedirect(returnUrl);
             }*/
-            return internalRequest;
         }
 
         public AuthModel GetAuthModelFromBearerValue(string val) => _encrypterDecrypter.DecryptObject<AuthModel>(val);

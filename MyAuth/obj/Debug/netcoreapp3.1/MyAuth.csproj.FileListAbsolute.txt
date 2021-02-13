@@ -235,3 +235,4 @@ C:\Users\tejoh\source\repos\MyAuth\MyAuth\obj\Debug\netcoreapp3.1\MyAuth.MvcAppl
 C:\Users\tejoh\source\repos\MyAuth\MyAuth\obj\Debug\netcoreapp3.1\MyAuth.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\ZetaLongPaths.dll
 C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\de\ZetaLongPaths.resources.dll
+C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\Configs\FlaskFaceAuth_Configuration.json
