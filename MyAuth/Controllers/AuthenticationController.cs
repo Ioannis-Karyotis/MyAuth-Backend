@@ -67,9 +67,15 @@ namespace MyAuth.Controllers
             {
                 case ClientsApiErrorCodes.NotExistingUser:
                     goto NotExistingUserCase;
+                case ClientsApiErrorCodes.BiometricAuthenticationFailure:
+                    goto BiometricAuthenticationFailureCase;
+                case ClientsApiErrorCodes.FlaskFaceAuthInternalError:
+                    goto FlaskInternalErrorCase;
             }
 
         NotExistingUserCase: return StatusCode(StatusCodes.Status500InternalServerError, new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.NotExistingUser));
+        BiometricAuthenticationFailureCase: return StatusCode(StatusCodes.Status500InternalServerError, new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.BiometricAuthenticationFailure));
+        FlaskInternalErrorCase: return StatusCode(StatusCodes.Status500InternalServerError, new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.FlaskFaceAuthInternalError));
             
         }
 

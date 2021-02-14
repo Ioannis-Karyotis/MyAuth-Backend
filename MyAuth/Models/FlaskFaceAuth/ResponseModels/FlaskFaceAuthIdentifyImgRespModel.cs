@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace MyAuth.Models.FlaskFaceAuth.ResponseModels
 {
-    public class FlaskFaceAuthRespModel<T> where T : class
+    public class FlaskFaceAuthIdentifyImgRespModel
     {
+        public bool IsMatch { get; set; }
     }
 }

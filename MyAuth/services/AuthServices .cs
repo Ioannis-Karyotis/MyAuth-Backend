@@ -140,11 +140,21 @@ namespace MyAuth.services
                         return new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.Unauthorized);
                     }
 
-                    var base64Img = Input.Base64Img.Replace("data:image/png;base64,", "");
+                    var base64Img = Input.Base64Img.Replace("data:image/jpeg;base64,", "");
 
                     var response = await _flaskFaceAuthServices.IdentifyUser(new FlaskFaceAuthIdentifyUserRequestModel() {Base64Img =  base64Img });
 
-                   AuthModel userAuth = new AuthModel();
+                    if (response.Success == false)
+                    {
+                        return new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.FlaskFaceAuthInternalError);
+                    }
+
+                    if (response.Success ==  true && response.Data.IsMatch == false)
+                    {
+                        return new HttpResponseData<SuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.BiometricAuthenticationFailure);
+                    }
+
+                    AuthModel userAuth = new AuthModel();
                     userAuth.ID = existingUser.Id.ToString();
 
                     //its wrong not hours but days 30 default TODO: Change It

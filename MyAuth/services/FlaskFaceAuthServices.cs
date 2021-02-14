@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using MyAuth.Enums;
 using MyAuth.Models.ConfigurationModels;
 using MyAuth.Models.Data;
+using MyAuth.Models.FlaskFaceAuth.ResponseModels;
 using MyAuth.Models.Interfaces;
 using MyAuth.Models.RequestModels;
 using MyAuth.Utils.HttpClients;
@@ -31,14 +32,14 @@ namespace MyAuth.services
 
 
 
-        public async Task<string> IdentifyUser(FlaskFaceAuthIdentifyUserRequestModel request)
+        public async Task<HttpResponseData<FlaskFaceAuthIdentifyImgRespModel,FlaskFaceAuthErrorCodes>> IdentifyUser(FlaskFaceAuthIdentifyUserRequestModel request)
         {
             var message = new HttpRequestMessage(HttpMethod.Post, _mainServices.FlaskFaceAuthService.ClientBaseUrl + "/compare");
             var json = JsonConvert.SerializeObject(request);
             message.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var callResult = await _client.Send<HttpResponseData<string, FlaskFaceAuthErrorCodes>>(message);
-            return null;
+            var callResult = await _client.Send<FlaskFaceAuthIdentifyImgRespModel>(message);
+            return callResult;
         }
 
 
