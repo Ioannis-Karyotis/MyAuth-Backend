@@ -9,7 +9,7 @@ namespace MyAuth.Models.ApiResponseModels
     {
         public string AuthToken { get; set; }
         public string X_Seq { get; set; }
-        public Guid Id { get; set; }
+        public string Email{ get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateExpired { get; set; }
     }

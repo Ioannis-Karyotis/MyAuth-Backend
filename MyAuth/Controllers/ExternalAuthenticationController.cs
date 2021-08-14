@@ -92,6 +92,35 @@ namespace MyAuth.Controllers
 
         }
 
+        [HttpPost("external/sign-in/auth/token")]
+        [EnableCors]
+        public async Task<ActionResult<HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes>>> SigninAuthToken([FromBody] LoginFacialRequestModel input)
+        {
+            HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes> response = await _externalAuthService.ExternalFacialRecognition(input);
+
+            if (response.Success == true)
+            {
+                return Ok(response);
+            }
+
+            ClientsApiErrorCodes val = response.Error.ErrorCode;
+
+            switch (val)
+            {
+                case ClientsApiErrorCodes.InvalidCredentials:
+                    goto NotExistingUserCase;
+                case ClientsApiErrorCodes.BiometricAuthenticationFailure:
+                    goto BiometricAuthenticationFailureCase;
+                case ClientsApiErrorCodes.FlaskFaceAuthInternalError:
+                    goto FlaskInternalErrorCase;
+            }
+
+        NotExistingUserCase: return StatusCode(StatusCodes.Status500InternalServerError, new HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.InvalidCredentials));
+        BiometricAuthenticationFailureCase: return StatusCode(StatusCodes.Status500InternalServerError, new HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.BiometricAuthenticationFailure));
+        FlaskInternalErrorCase: return StatusCode(StatusCodes.Status500InternalServerError, new HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.FlaskFaceAuthInternalError));
+
+        }
+
         [HttpPost("verify-code")]
         public async Task<ActionResult<HttpResponseData<ExternalAccessTokenRespModel, ClientsApiErrorCodes>>>  VerifyCode(VerifyCodeRequestModel req)
         {

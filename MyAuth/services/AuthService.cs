@@ -285,7 +285,7 @@ namespace MyAuth.services
             var internalRequest = new SuccessfulLoginRespModel()
             {
                 AuthToken = finalEncrypted,
-                Id = existingUser.Id,
+                Email = existingUser.Email,
                 DateCreated = DateTime.Now,
                 DateExpired = DateTime.Now.AddMinutes(30)
             };
