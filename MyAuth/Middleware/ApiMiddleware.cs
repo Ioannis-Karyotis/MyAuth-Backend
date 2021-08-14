@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using MyAuth.Models.ConfigurationModels;
 using MyAuth.services;
+using MyAuth.Services;
 using MyAuth.Utils.Extentions;
 using Newtonsoft.Json;
 using System;
@@ -24,6 +25,7 @@ namespace MyAuth.Middleware
         private readonly AppApiKeys _apiKeys;
         private readonly string _apiPath;
         private readonly string _mobilesWebApiLogout;
+        private readonly string _externalResourcesPath;
 
         public ApiMiddleware(RequestDelegate next, ILogger<ApiMiddleware> logger, IOptions<AppApiKeys> apiKeys, IOptions<AuthPasswordHash> hashKey)
         {
@@ -32,9 +34,11 @@ namespace MyAuth.Middleware
             _hashKey = hashKey.Value;
             _apiKeys = apiKeys.Value;
             _apiPath = "api";
+            _externalResourcesPath = "accounts/oauth2";
         }
 
         private bool IsForAPI(string endpoint) => endpoint.ToLower().Contains(_apiPath);
+        private bool IsForExternalResources(string endpoint) => endpoint.ToLower().Contains(_externalResourcesPath);
         private bool IsForMobileWebAppLogout(string endpoint) => endpoint.ToLower().Contains(_mobilesWebApiLogout);
 
         private ActionResult UnauthorizedAppResponse() => new UnauthorizedResult();
@@ -85,6 +89,45 @@ namespace MyAuth.Middleware
                     }
                 }
             }
+        } 
+        
+        private void VerifyExternalAuthBearerToken(HttpContext httpContext, ExternalAuthService externalAuthService)
+        {
+            if (httpContext.Request.Headers.TryGetValue("AuthBearer", out StringValues bearrer))
+            {
+                if (bearrer.Count() > 0 && _hashKey.PasswordHash != null)
+                {
+                    if (bearrer.Last().CheckAllCasesIsNotNull())
+                    {
+                        var finalbearrer = bearrer.Last().Replace("Bearer_", "");
+                        finalbearrer = finalbearrer.Replace(" ", "");
+
+                        var objAuth = externalAuthService.GetAccessTokenFromBearerValue(finalbearrer);
+                        if (objAuth != null && objAuth.ValidateExpiredAuthPeriod())
+                        {
+                            if (objAuth.CheckAndUpdateRenewValidUntil())
+                            {
+                                //authServices.SetNewBearer(objAuth);
+                                if (!httpContext.Items.ContainsKey("external_auth"))
+                                {
+                                    httpContext.Items.Add("external_auth", objAuth);
+                                }
+                                else
+                                {
+                                    httpContext.Items["external_auth"] = objAuth;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (httpContext.Items.ContainsKey("external_auth"))
+                            {
+                                httpContext.Items.Remove("external_auth");
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         
@@ -101,7 +144,7 @@ namespace MyAuth.Middleware
             }
         }*/
 
-        public async Task Invoke(HttpContext httpContext, AuthServices authMobileServices)
+        public async Task Invoke(HttpContext httpContext, AuthServices authMobileServices , ExternalAuthService externalAuthService)
         {
             var endpoint = httpContext.Request.Path.Value;
 
@@ -119,6 +162,10 @@ namespace MyAuth.Middleware
                 }
                 goto UnauthorizedAppResponseAct;
             }
+            else if (IsForExternalResources(endpoint))
+            {
+                goto ExternalResourcesCase;
+            }
             goto NormalNonApiAct;
 
 
@@ -133,6 +180,13 @@ namespace MyAuth.Middleware
             {
                 RenewAuthBearerToken(httpContext, authMobileServices);
                 //SetOnRequestDeviceFlag(DevicesEnum.MOBILEMEMBER, httpContext);
+                await _next(httpContext);
+                return;
+            }
+        
+        ExternalResourcesCase:
+            {
+                VerifyExternalAuthBearerToken(httpContext, externalAuthService);
                 await _next(httpContext);
                 return;
             }

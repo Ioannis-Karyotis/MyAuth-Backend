@@ -7,5 +7,7 @@ namespace MyAuth.Models.ApiResponseModels
 {
     public class SuccessfulRegisterRespModel
     {
+        public Guid Id { get; set; }
+        public string X_seq { get; set; }
     }
 }

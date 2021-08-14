@@ -230,9 +230,13 @@ C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\IronPython.SQL
 C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\IronPython.Wpf.dll
 C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\IronPython.dll
 C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\System.CodeDom.dll
-C:\Users\tejoh\source\repos\MyAuth\MyAuth\obj\Debug\netcoreapp3.1\MyAuth.csproj.CoreCompileInputs.cache
-C:\Users\tejoh\source\repos\MyAuth\MyAuth\obj\Debug\netcoreapp3.1\MyAuth.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\tejoh\source\repos\MyAuth\MyAuth\obj\Debug\netcoreapp3.1\MyAuth.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\ZetaLongPaths.dll
 C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\de\ZetaLongPaths.resources.dll
 C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\Configs\FlaskFaceAuth_Configuration.json
+C:\Users\tejoh\source\repos\MyAuth\MyAuth\obj\Debug\netcoreapp3.1\MyAuth.csproj.CoreCompileInputs.cache
+C:\Users\tejoh\source\repos\MyAuth\MyAuth\obj\Debug\netcoreapp3.1\MyAuth.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\tejoh\source\repos\MyAuth\MyAuth\obj\Debug\netcoreapp3.1\MyAuth.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\Numpy.dll
+C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\Python.Deployment.dll
+C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\Python.Included.dll
+C:\Users\tejoh\source\repos\MyAuth\MyAuth\bin\Debug\netcoreapp3.1\Python.Runtime.dll

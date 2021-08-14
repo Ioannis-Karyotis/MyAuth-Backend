@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using MyAuth.Models.Database;
 using System;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MyAuth.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : DbContext
     {
         private readonly IConfiguration _configuration;
         
@@ -20,12 +22,12 @@ namespace MyAuth.Data
         }
 
         public DbSet<MyAuthUser> MyAuthUsers { get; set; }
+        public DbSet<ExternalApp> ExternalApps{ get; set; }
+        public DbSet<ExternalAppAuthUser> ExternalAppsAuthUsers{ get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.HasDefaultSchema("MyAuth");
-
-            //builder.Entity<MyAuthUser>().HasKey(s => s.ID);
+            builder.BuildModels("MyAuth");
 
             base.OnModelCreating(builder);
         }

@@ -10,7 +10,9 @@ namespace MyAuth.Enums
         Unauthorized,
         UnauthorizedApplication,
         InternalError,
-        NotExistingUser,
+        NotValidPayload,
+        AlreadyExistingUser,
+        InvalidCredentials,
         FlaskFaceAuthInternalError,
         BiometricAuthenticationFailure
     }

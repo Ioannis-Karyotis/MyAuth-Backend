@@ -80,6 +80,10 @@
               "target": "Package",
               "version": "[5.0.0, )"
             },
+            "Numpy": {
+              "target": "Package",
+              "version": "[3.7.1.25, )"
+            },
             "Serilog": {
               "target": "Package",
               "version": "[2.10.0, )"

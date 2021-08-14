@@ -36,6 +36,29 @@ namespace MyAuth.Utils
             return _cache.StoreInMemoryAbsoluteCustomKey<string>(TheGuid.ToString(), valRes, 60 * 60);
         }
 
+        public string CombineAndSaveHashListValues(List<string> values, Guid? guid = null)
+        {
+            Guid TheGuid;
+            if (!guid.HasValue || (guid.HasValue && guid.Value == Guid.Empty))
+            {
+                TheGuid = Guid.NewGuid();
+            }
+            else
+            {
+                TheGuid = guid.Value;
+            }
+            var firstStrHash = $"{TheGuid.ToString()}";
+            foreach (var item in values)
+            {
+                firstStrHash = $"{firstStrHash}::{item}";
+            }
+            var finalStrHash = $"{firstStrHash}::{DateTime.Now}";
+
+            var valRes = ToBase64Str(finalStrHash);
+
+            return _cache.StoreInMemoryAbsoluteCustomKey<string>(TheGuid.ToString(), valRes, 60 * 60);
+        }
+
         public bool RetrieveValidateDiscardHash(string hashStr, bool discard = false)
         {
             if (hashStr == null)

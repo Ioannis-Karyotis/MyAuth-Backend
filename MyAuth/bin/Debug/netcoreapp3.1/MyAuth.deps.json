@@ -34,6 +34,7 @@
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "3.1.4",
           "Newtonsoft.Json": "12.0.3",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "5.0.0",
+          "Numpy": "3.7.1.25",
           "Serilog": "2.10.0",
           "ZetaLongPaths": "1.0.0.38",
           "jose-jwt": "3.0.0",
@@ -1421,6 +1422,58 @@
         },
         "compile": {
           "lib/netstandard1.6/NuGet.Frameworks.dll": {}
+        }
+      },
+      "Numpy/3.7.1.25": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0",
+          "Python.Included": "3.7.3.13"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Numpy.dll": {
+            "assemblyVersion": "3.7.1.25",
+            "fileVersion": "3.7.1.25"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Numpy.dll": {}
+        }
+      },
+      "Python.Deployment/1.2.0": {
+        "runtime": {
+          "lib/netstandard2.0/Python.Deployment.dll": {
+            "assemblyVersion": "1.2.0.0",
+            "fileVersion": "1.2.0.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Python.Deployment.dll": {}
+        }
+      },
+      "Python.Included/3.7.3.13": {
+        "dependencies": {
+          "Python.Deployment": "1.2.0",
+          "pythonnet_netstandard_py37_win": "2.5.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Python.Included.dll": {
+            "assemblyVersion": "3.7.3.13",
+            "fileVersion": "3.7.3.13"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Python.Included.dll": {}
+        }
+      },
+      "pythonnet_netstandard_py37_win/2.5.1": {
+        "runtime": {
+          "lib/netstandard2.0/Python.Runtime.dll": {
+            "assemblyVersion": "2.5.1.0",
+            "fileVersion": "2.5.1.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Python.Runtime.dll": {}
         }
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {},
@@ -4661,6 +4714,34 @@
       "sha512": "sha512-qbXaB76XYUVLocLBs8Z9TS/ERGK2wm797feO+0JEPFvT7o7MRadOR77mqaSD4J1k8G+DlZQyq+MlkCuxrkr3ag==",
       "path": "nuget.frameworks/4.7.0",
       "hashPath": "nuget.frameworks.4.7.0.nupkg.sha512"
+    },
+    "Numpy/3.7.1.25": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RdXjVnoRBZlKTiBpdtC8KGUhzK3UVTF3rYfQ9yb8D8MuTGHnz+11Bg8npOdavhmRZd8Z+VGTe5hbHcUufsFtIw==",
+      "path": "numpy/3.7.1.25",
+      "hashPath": "numpy.3.7.1.25.nupkg.sha512"
+    },
+    "Python.Deployment/1.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-g5US41l+hftiUrnPwNp5dtp/Dql16Bn3csyqgXo/pTvyAqCbZim6zUUvUUO1YasxzxY4F/16ughKR2lG21PhuA==",
+      "path": "python.deployment/1.2.0",
+      "hashPath": "python.deployment.1.2.0.nupkg.sha512"
+    },
+    "Python.Included/3.7.3.13": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FYao1eP0dpMDgsKplYPIujP4r9zB6UZvOX0nwiMYiZg65a/AQGDTfbOBQwbFVsNhKpFGPVxHKWfoIhDv7NASuA==",
+      "path": "python.included/3.7.3.13",
+      "hashPath": "python.included.3.7.3.13.nupkg.sha512"
+    },
+    "pythonnet_netstandard_py37_win/2.5.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RMsXNGdWfq8eCSmrA/lWXXiB2j8fT/IkXANTtAh7z0jN9ydN5JJQ+EGdAw8g+GvG4WBxEjyv4TUqDERuMN826Q==",
+      "path": "pythonnet_netstandard_py37_win/2.5.1",
+      "hashPath": "pythonnet_netstandard_py37_win.2.5.1.nupkg.sha512"
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
       "type": "package",

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "QYogRr5T6XA9DVvTAvMq4H0X6Ix3VNT0fW1jazZd5zAnOh39GlgfVmY3ZqA74QrEKGTP46b15/AYYE0IQEFr/w==",
+  "dgSpecHash": "WPeZvmF2DTd69Oce+ocLBA6/q3ZqzMD5QzSC2Gex/OCMMovLh9+oi9PsaTWMFh7N7+sEj1+v1aarqtWiVmidig==",
   "success": true,
   "projectFilePath": "C:\\Users\\tejoh\\source\\repos\\MyAuth\\MyAuth\\MyAuth.csproj",
   "expectedPackageFiles": [
@@ -73,6 +73,10 @@
     "C:\\Users\\tejoh\\.nuget\\packages\\npgsql\\5.0.0\\npgsql.5.0.0.nupkg.sha512",
     "C:\\Users\\tejoh\\.nuget\\packages\\npgsql.entityframeworkcore.postgresql\\5.0.0\\npgsql.entityframeworkcore.postgresql.5.0.0.nupkg.sha512",
     "C:\\Users\\tejoh\\.nuget\\packages\\nuget.frameworks\\4.7.0\\nuget.frameworks.4.7.0.nupkg.sha512",
+    "C:\\Users\\tejoh\\.nuget\\packages\\numpy\\3.7.1.25\\numpy.3.7.1.25.nupkg.sha512",
+    "C:\\Users\\tejoh\\.nuget\\packages\\python.deployment\\1.2.0\\python.deployment.1.2.0.nupkg.sha512",
+    "C:\\Users\\tejoh\\.nuget\\packages\\python.included\\3.7.3.13\\python.included.3.7.3.13.nupkg.sha512",
+    "C:\\Users\\tejoh\\.nuget\\packages\\pythonnet_netstandard_py37_win\\2.5.1\\pythonnet_netstandard_py37_win.2.5.1.nupkg.sha512",
     "C:\\Users\\tejoh\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\tejoh\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\tejoh\\.nuget\\packages\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",

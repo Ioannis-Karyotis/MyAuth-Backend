@@ -64,27 +64,7 @@ namespace MyAuth.Controllers
             return "value";
         }
 
-        [HttpPost]
-        [EnableCors]
-        public async Task<ActionResult<HttpResponseData<SuccessfulRegisterRespModel, ClientsApiErrorCodes>>> Post([FromBody] RegisterReqModel newUser)
-        {
-            HttpResponseData<SuccessfulRegisterRespModel, ClientsApiErrorCodes> response = await _authServices.DoSignupUser(newUser);
-
-            if (response.Success == true)
-            {
-                return Ok(response);
-            }
-
-            ClientsApiErrorCodes val = response.Error.ErrorCode;
-
-            switch (val)
-            {
-                case ClientsApiErrorCodes.InternalError:
-                    goto FailureCase;
-            }
-
-        FailureCase: return Unauthorized(new HttpResponseData<SuccessfulRegisterRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.InternalError));
-        }
+        
 
         // PUT api/<RegisterController>/5
         [HttpPut("{id}")]

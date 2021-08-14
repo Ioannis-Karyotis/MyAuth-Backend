@@ -8,6 +8,6 @@ namespace MyAuth.Models.RequestModels
     public class LoginFacialRequestModel
     {
         public string X_seq { get; set; }
-        public string Base64Img{ get; set; }
+        public string FaceDescriptor { get; set; }
     }
 }

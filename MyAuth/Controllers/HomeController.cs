@@ -33,42 +33,22 @@ namespace MyAuth.Controllers
         }
 
         [HttpGet("home")]
-        public ActionResult Home()
+        public async Task<ActionResult> Home()
         {
-
-            var filePythonNamePath = @"C:\Users\tejoh\python\Face_Registration.py";
-            var filePythonExePath = @"C:\Users\tejoh\AppData\Local\Programs\Python\Python38\python.exe";
-            var filename1 = @"C:\Users\tejoh\python\john1.jpg";
-            var filename2 = @"C:\Users\tejoh\python\john2.jpg";
-
-
-            byte[] imageArray = System.IO.File.ReadAllBytes(filename1);
-            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
-
-
-
-            string outputText, standardError;
-
-            // Instantiate Machine Learning C# - Python class object            
-            IMLSharpPython mlSharpPython = new MLSharpPython(filePythonExePath);
-    
-            // Define Python script file and input parameter name
-            string fileNameParameter = $"{filePythonNamePath}" /*{filePythonParameterName} {imagePathName}*/;
-            string arguments = $"{base64ImageRepresentation}" /*{filePythonParameterName} {imagePathName}*/;
-            // Execute the python script file 
-            
-            outputText = mlSharpPython.ExecutePythonScript(fileNameParameter, arguments , out standardError);
-            if (string.IsNullOrEmpty(standardError))
+            ExternalApp app = new ExternalApp()
             {
-                
-            }
-            else
-            {
-                Console.WriteLine(standardError);
-            }
-            Console.ReadKey();
+                MyAuthUserId = new Guid("e1f1b049-529b-44be-8b66-b8f8102ebd94"),
+                CallbackUrl = "https://scorpionclothing.gr/auth/google/callback",
+                ClientId = "229507214379-q4vnk966nlih2992uqeobr0g98uebvrd.apps.googleusercontent.com",
+                Created = DateTime.Now,
+                Id = Guid.NewGuid(),
+                LastUpdated = DateTime.Now
+            };
 
-            return Ok("Testing page");
+            _context.ExternalApps.Add(app);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
