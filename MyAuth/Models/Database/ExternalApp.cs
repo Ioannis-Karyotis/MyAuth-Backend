@@ -10,6 +10,8 @@ namespace MyAuth.Models.Database
     {
         [Key]
         public Guid Id { get; set; }
+        public string AppName { get; set; }
+        public string BaseUrl { get; set; }
         public Guid MyAuthUserId { get; set; }
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }

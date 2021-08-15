@@ -86,7 +86,8 @@ namespace MyAuth
                   builder => builder.WithOrigins("http://localhost:4200")
                   .AllowAnyMethod()
                   .AllowAnyHeader()
-                  .AllowCredentials());
+                  .AllowCredentials()
+                  .WithMethods("GET", "POST", "OPTIONS", "DELETE", "PUT"));
             });
             services.AddMemoryCache();
 
@@ -105,6 +106,7 @@ namespace MyAuth
 
             //Rest Services
             services.AddScoped<AuthServices>();
+            services.AddScoped<AccountService>();
             services.AddScoped<ExternalAuthService>();
             services.AddScoped<FlaskFaceAuthServices>(); 
             services.AddScoped<TxtFileValidatorService>(); 

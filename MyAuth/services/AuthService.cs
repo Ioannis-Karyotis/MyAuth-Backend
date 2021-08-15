@@ -280,7 +280,7 @@ namespace MyAuth.services
 
             var finalEncrypted = _encrypterDecrypter.EncryptObject<AuthModel>(userAuth);
 
-            //_actionContext.HttpContext.Response.Headers.Add("X-AUTH-DASH", finalEncrypted);
+            _actionContext.HttpContext.Response.Headers.Add("X-AUTH-DASH", finalEncrypted);
 
             var internalRequest = new SuccessfulLoginRespModel()
             {

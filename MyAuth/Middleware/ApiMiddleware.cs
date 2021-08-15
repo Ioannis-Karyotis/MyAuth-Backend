@@ -60,7 +60,7 @@ namespace MyAuth.Middleware
                 {
                     if (bearrer.Last().CheckAllCasesIsNotNull())
                     {
-                        var finalbearrer = bearrer.Last().Replace("Bearer", "");
+                        var finalbearrer = bearrer.Last().Replace("Bearer_", "");
                         finalbearrer = finalbearrer.Replace(" ", "");
 
                         var objAuth = authServices.GetAuthModelFromBearerValue(finalbearrer);
@@ -186,6 +186,7 @@ namespace MyAuth.Middleware
         
         ExternalResourcesCase:
             {
+                RenewAuthBearerToken(httpContext, authMobileServices);
                 VerifyExternalAuthBearerToken(httpContext, externalAuthService);
                 await _next(httpContext);
                 return;

@@ -94,9 +94,9 @@ namespace MyAuth.Controllers
 
         [HttpPost("external/sign-in/auth/token")]
         [EnableCors]
-        public async Task<ActionResult<HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes>>> SigninAuthToken([FromBody] LoginFacialRequestModel input)
+        public async Task<ActionResult<HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes>>> SigninAuthToken([FromBody] ExternalLoginAuthTokenReqModel input)
         {
-            HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes> response = await _externalAuthService.ExternalFacialRecognition(input);
+            HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes> response = await _externalAuthService.DoExternalAuthTokenLoginUser(input);
 
             if (response.Success == true)
             {

@@ -174,6 +174,33 @@ namespace MyAuth.Services
                 return new HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.UnauthorizedApplication);
             }
         }
+        
+        public async Task<HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes>> DoExternalAuthTokenLoginUser(ExternalLoginAuthTokenReqModel input)
+        {
+
+            var verifySource = await VerifySource(input.Response_type, input.Client_id, input.Redirect_uri, input.Scope);
+            if (verifySource.Status == false)
+            {
+                return new HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.InternalError);
+            }
+
+            AuthModel authUser = _authServices.GetAthenticatedByMiddlewareInfo();
+            if (authUser == null)
+            {
+                return new HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.Unauthorized);
+            }
+
+            MyAuthUser existingUser = await _context.MyAuthUsers.Where(d => d.Id == new Guid(authUser.ID)).FirstOrDefaultAsync();
+
+            if (existingUser == null )
+            {
+                return new HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.Unauthorized);
+            }
+
+            return await RedirectAuthCode(existingUser, input.Client_id, input.Redirect_uri, input.State);
+
+
+        }
 
         public async Task<HttpResponseData<ExternalAccessTokenRespModel, ClientsApiErrorCodes>> VerifyCode(string grant_type, string code, string redirect_uri, string client_id)
         {
@@ -199,6 +226,13 @@ namespace MyAuth.Services
             if (codeModel.ValidUntil < DateTime.Now)
             {
                 return new HttpResponseData<ExternalAccessTokenRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.Unauthorized);
+            }
+
+            bool connection = await AssertExternalAppAuthUserExists(externalAppClient.Id, new Guid(codeModel.ID));
+
+            if(connection == false)
+            {
+                return new HttpResponseData<ExternalAccessTokenRespModel, ClientsApiErrorCodes>(ClientsApiErrorCodes.InternalError);
             }
 
             ExternalAccessTokenModel access_token = new ExternalAccessTokenModel()
@@ -238,6 +272,32 @@ namespace MyAuth.Services
             return new HttpResponseData<ExternalSuccessfulLoginRespModel, ClientsApiErrorCodes>(internalRequest);
         }
 
+        public async Task<bool> AssertExternalAppAuthUserExists(Guid externalAppId , Guid userId)
+        {
+            try
+            {
+                ExternalAppAuthUser connection = await _context.ExternalAppsAuthUsers.Where(d => d.ExternalAppId == externalAppId && d.MyAuthUserId == userId).FirstOrDefaultAsync();
+                if (connection == null)
+                {
+                    connection = new ExternalAppAuthUser()
+                    {
+                        Id = Guid.NewGuid(),
+                        ExternalAppId = externalAppId,
+                        MyAuthUserId = userId,
+                        Created = DateTime.Now
+                    };
+                    _context.ExternalAppsAuthUsers.Add(connection);
+                    await _context.SaveChangesAsync();
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
+        
         public async Task<InternalDataTransfer<bool?>> VerifySource(string response_type, string client_id, string redirect_uri, string scope)
         {
             if (response_type != "code" || scope != "profile")
