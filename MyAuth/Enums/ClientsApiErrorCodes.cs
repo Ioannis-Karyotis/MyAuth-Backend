@@ -14,6 +14,7 @@ namespace MyAuth.Enums
         AlreadyExistingUser,
         InvalidCredentials,
         FlaskFaceAuthInternalError,
-        BiometricAuthenticationFailure
+        BiometricAuthenticationFailure,
+        AlreadyExistingApp,
     }
 }

@@ -11,7 +11,6 @@ using MyAuth.Utils.Extentions;
 namespace MyAuth.Models.Data
 {
     public class HttpResponseData<T, TErrorCode>
-        where T : class
         where TErrorCode : Enum
     {
         public bool Success { get; set; }

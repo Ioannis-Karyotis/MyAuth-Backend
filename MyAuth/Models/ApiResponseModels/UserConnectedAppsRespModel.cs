@@ -7,6 +7,7 @@ namespace MyAuth.Models.ApiResponseModels
 {
     public class AppConnectedApp
     {
+        public Guid Id { get; set; }
         public string AppName { get; set; }
         public string AppUrl { get; set; }
         public DateTime DateConnected { get; set; }
