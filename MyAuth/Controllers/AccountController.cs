@@ -360,6 +360,37 @@ namespace MyAuth.Controllers
             return result2;
         }
 
+        [HttpPost("delete-app/{id}")]
+        [EnableCors]
+        public async Task<ActionResult<HttpResponseData<bool?, ClientsApiErrorCodes>>> DeleteApp([FromRoute] Guid id)
+        {
+            HttpResponseData<bool?, ClientsApiErrorCodes> response = await _accountService.DeleteApp(id);
+
+            if (response.Success == true)
+            {
+                return Ok(response);
+            }
+
+            ClientsApiErrorCodes val = response.Error.ErrorCode;
+
+            switch (val)
+            {
+                case ClientsApiErrorCodes.InternalError:
+                    goto FailureCase;
+                case ClientsApiErrorCodes.Unauthorized:
+                    goto UnauthorzsedCase;
+            }
+
+        FailureCase:
+            var result = new ObjectResult(new HttpResponseData<bool?, ClientsApiErrorCodes>(ClientsApiErrorCodes.InternalError));
+            result.StatusCode = 500;
+            return result;
+        UnauthorzsedCase:
+            var result2 = new ObjectResult(new HttpResponseData<bool?, ClientsApiErrorCodes>(ClientsApiErrorCodes.Unauthorized));
+            result2.StatusCode = 401;
+            return result2;
+        }
+
 
     }  
 }

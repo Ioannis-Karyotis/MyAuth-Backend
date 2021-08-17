@@ -292,5 +292,25 @@ namespace MyAuth.Services
 
         }
 
+        public async Task<HttpResponseData<bool?, ClientsApiErrorCodes>> DeleteApp(Guid Id)
+        {
+            AuthModel authUser = _authServices.GetAthenticatedByMiddlewareInfo();
+            if (authUser == null)
+            {
+                return new HttpResponseData<bool?, ClientsApiErrorCodes>(ClientsApiErrorCodes.Unauthorized);
+            }
+
+            ExternalApp app = await _context.ExternalApps.Where(d => d.Id == Id && d.MyAuthUserId == new Guid(authUser.ID)).FirstOrDefaultAsync();
+
+            if (app == null || app.MyAuthUserId != new Guid(authUser.ID))
+            {
+                return new HttpResponseData<bool?, ClientsApiErrorCodes>(ClientsApiErrorCodes.NotValidPayload);
+            }
+
+            _context.ExternalApps.Remove(app);
+            await _context.SaveChangesAsync();
+            return new HttpResponseData<bool?, ClientsApiErrorCodes>(true);
+        }
+
     }
 }

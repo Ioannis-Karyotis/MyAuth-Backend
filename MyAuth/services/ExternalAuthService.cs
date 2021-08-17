@@ -341,7 +341,7 @@ namespace MyAuth.Services
             ExternalUserInfoRespModel resp = new ExternalUserInfoRespModel()
             {
                 email = existingUser.Email,
-                id = accessToken.ID
+                id = existingUser.Id.ToString()
             };
             
 
